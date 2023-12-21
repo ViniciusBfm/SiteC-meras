@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link href="../static/css/home.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <title>Câmeras Maple Bear Busca Vida</title>
+    <link rel="shortcut icon" type="image-x/png" href="../static/image/icone.ico">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese-Brasil.json"></script>
+    
+</head>
+<body>
+    <header>
+        <div class="menu-nome">
+            <img src="../static/image/camera-de-seguranca.png" alt="">
+            <h1>Câmeras BV</h1>
+        </div>
+        <div class="menu-sair">
+            <p>{{nome}}</p>
+            <img src="../static/image/imgperfil.png" alt="">
+        </div>
+        <div class="menu-nome-logout">
+                <div>
+                    <img src="../static/image/perfil.png" alt="">
+                    <a href="">Perfil</a>
+                </div>
+                <div>
+                    <img src="../static/image/logout.png" alt="">
+                    <a href="/login">Logout</a>
+                </div>
+               
+        </div>
+    </header>
+    <section class="menu-infos">
+        <nav class="menu" id="menu">
+            <ul>
+                <ul class="menu-box" style="margin-top: 20px;">
+                    <h3 class="localizar">Localizar</h3>
+                    <li class="menudiv1">
+                        <div class="menu-a1">
+                            <img class="iconeimg" src="../static/image/ip.png" alt="">
+                            <a class="link1" href="#ip">IP/Nome </a>
+                        </div>
+                        <img class="right seta1" src="../static/image/rigght.png" alt="">
+                    </li>
+                </ul>
+                <ul class="menu-box" style="border-bottom: 1px solid #ffffff5e; margin-top: 10px;">              
+                    <h3 class="verificar">Verificar</h3>
+                    <li class="menudiv">
+                        <div class="menu-a">
+                            <img class="iconeimg" src="../static/image/imagens.png" alt="">
+                            <a class="link" href="#imagens">Imagens</a>
+                        </div>
+                        <img class="right seta" src="../static/image/rigght.png" alt="">
+                    </li>
+                </ul>
+            </ul>
+            <img src="../static/image/mennu.png" alt="" srcset="" id="menu-suspenso">
+        </nav>
+        <div class="infos" id="infos">
+            <div id="ip" class="conteudo">
+                <div>
+                    <div class="ip-search">
+                        <div class="ip-search-titulo">
+                            <h1>LOCALIZAR</h1>
+                            <button> <img src="../static/image/baixar.png" alt="">Gerar Relatório</button>
+                        </div>
+                       
+                        <div class="ip-input">
+                            <div>
+                                <input type="search" name="search" id="search" placeholder="Digite o IP">
+                                <button type="submit" onclick="pesquisarPorIP()">
+                                    <img src="../static/image/pesquisar.png" alt="Pesquisar">
+                                </button>    
+                            </div>
+                            <img id="addbtn" src="../static/image/btnadd.png" alt="Adicionar">
+                        </div>
+                    </div>
+                    <div class="lista-ip" id="lista-ip"></div>
+                    <!-- Adicione uma classe à tabela para facilitar a identificação -->
+                    <table id="tabela-ip" class="display">
+                        <thead>
+                            <tr>
+                                <th>IP</th>
+                                <th>Nome</th>
+                                <th>DVR</th>
+                                <th class="penultimacoluna">Posição</th>
+                                <th>Remover?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.ip }}</td>
+                                <td>{{ user.nome }}</td>
+                                <td>{{ user.dvr }}</td>
+                                <td>{{ user.posicao }}</td>
+                                <td>
+                                    <a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">
+                                        <img src="../static/image/excluir.png" alt="Excluir">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="boxAddForms">
+                        <p class="close">X</p>
+                        <form action="{{ url_for('home') }}" method="post">
+                            <label for="ip">IP:</label><br>
+                            <input type="text" id="ip" name="ip" required><br>
+                            <label for="nome">Nome:</label><br>
+                            <input type="text" id="nome" name="nome" required><br>
+                            <label for="dvr">DVR:</label><br>
+                            <input type="text" id="dvr" name="dvr" required><br>
+                            <label for="posicao">Posição:</label><br>
+                            <input type="text" id="posicao" name="posicao"><br>
+                            <input type="submit" value="Adicionar Usuário">
+                        </form> 
+                    </div>
+                          
+                </div>
+            </div>
+            <div id="imagens" class="conteudo">
+                <div class="imagens-titulo">
+                    <h1>IMAGENS</h1>
+                </div>
+                <div class="menu-dvrs">
+                    <div class="box-dvr" onclick="mostrarConteudo('dvr1')">
+                        <div>
+                            <a href="#" >DVR1</a>
+                            <h1 id="dvr1cont"></h1>
+                        </div>
+                        <img src="../static/image/dvr.png" alt="">  
+                    </div>
+                    <div class="box-dvr" onclick="mostrarConteudo('dvr2')">
+                        <div>
+                            <a href="#" >DVR2</a>
+                            <h1 id="dvr2cont"></h1>
+                        </div>
+                        <img src="../static/image/dvr.png" alt="">
+                    </div>
+                    <div class="box-dvr">
+                        <div>
+                            <a href="#" >TOTAL</a>
+                            <h1 id="dvrconttotal"></h1>
+                        </div>
+                        <img src="../static/image/dvr.png" alt="">
+                    </div>      
+                </div>
+
+                <div class="conteudo-dvrs" id="dvr">
+                    <div class="dvr-imagens" id="dvr1">
+                        <div class="conteudo-dvrs">
+                            <div class="box-imagens">
+                                <div class="slider-container">
+                                  <div class="slider">
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/externa2.png" alt="Externa 2">
+                                        <div>
+                                            <h5>Externa 2</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem-entrada.png" alt="garagem-entrada">
+                                        <div>
+                                            <h5>Garagem Entrada</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/entrada-recepção01.png" alt="entrada-recepção-01">
+                                        <div>
+                                            <h5>Entrada Recepção 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/entrada-recepção02.png" alt="entrada-recepção-02">
+                                        <div>
+                                            <h5>Entrada Recepção 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/rampa-garagem.png" alt="rampa-garagem">
+                                        <div>
+                                            <h5>Rampa Garagem</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem01.png" alt="Garagem 01">
+                                        <div>
+                                            <h5>Garagem 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem04.png" alt="Garagem 04">
+                                        <div>
+                                            <h5>Garagem 04</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem02.png" alt="Garagem 02">
+                                        <div>
+                                            <h5>Garagem 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem03.png" alt="Garagem 03">
+                                        <div>
+                                            <h5>Garagem 03</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem05.png" alt="Garagem 05">
+                                        <div>
+                                            <h5>Garagem 05</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem07.png" alt="Garagem 07">
+                                        <div>
+                                            <h5>Garagem 07</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem06.png" alt="Garagem 06">
+                                        <div>
+                                            <h5>Garagem 06</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/garagem08.png" alt="Garagem 08">
+                                        <div>
+                                            <h5>Garagem 08</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/rampa-quadra.png" alt="Rampa quadra">
+                                        <div>
+                                            <h5>Rampa Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/saida-garagem-02.png" alt="Saida Garagem 02">
+                                        <div>
+                                            <h5>Saida Garagem 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/saida-garagem-03.png" alt="Saida Garagem 03">
+                                        <div>
+                                            <h5>Saida Garagem 03</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/est-externo-04.png" alt="Estacionamento externo 04">
+                                        <div>
+                                            <h5>Estacionamento externo 04</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/lateral-quadra.png" alt="Lateral Quadra">
+                                        <div>
+                                            <h5>Lateral Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/lateral-entrada.png" alt="Lateral Entrada">
+                                        <div>
+                                            <h5>Lateral Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/portaria-fundo.png" alt="Portaria Fundo">
+                                        <div>
+                                            <h5>Portaria Fundo</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/condesadores.png" alt="Condensadores">
+                                        <div>
+                                            <h5>Condensadores</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/casa-bombas.png" alt="Casa de Bombas">
+                                        <div>
+                                            <h5>Casa de Bombas</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/est-tratamento.png" alt="Estação de Tratamento">
+                                        <div>
+                                            <h5>Estação de tratamento</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera">
+                                        <img src="../static/image/fundo-quadra.png" alt="Fundo quadra">
+                                        <div>
+                                            <h5>Fundo Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+
+                                  </div>
+                                </div>
+                                <div class="pagination"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dvr-imagens" id="dvr2">
+                        <div class="conteudo-dvrs">
+                            <div class="box-imagens">
+                                <div class="slider-container">
+                                  <div class="slider1">
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/escada emergencia 1 andar.png" alt="Escada de emergência 1 andar">
+                                        <div>
+                                            <h5>Escada de emergência 1° andar</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Esc. emerg ss.png" alt="Escada de emergência Ss">
+                                        <div>
+                                            <h5>Escada de emergência Ss</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/terraço-02.png" alt="Terraço 02">
+                                        <div>
+                                            <h5>Terraço 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/esc. emergencia terraço.png" alt="Escada de emergência terraço">
+                                        <div>
+                                            <h5>Escada de emergência Terraço</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Corredor Y3.png" alt="Corredor Y3">
+                                        <div>
+                                            <h5>Sala aula 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Corredor Biblioteca.png" alt="Corredor Biblioteca">
+                                        <div>
+                                            <h5>Sk e Jk</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Almoxarifado.png" alt="Almoxarifado">
+                                        <div>
+                                            <h5>Almoxarifado</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Brinquedo.png" alt="Brinquedo">
+                                        <div>
+                                            <h5>Brinquedo</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Recepção 03.png" alt="Recepção 03">
+                                        <div>
+                                            <h5>Recepção 03</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Rampa 1 andar.png" alt="Rampa 1° andar">
+                                        <div>
+                                            <h5>Rampa 1° andar</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Tapete colorido.png" alt="Tapete Colorido">
+                                        <div>
+                                            <h5>Tapete Colorido</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Secretaria 01.png" alt="Secretaria 01">
+                                        <div>
+                                            <h5>Secretaria 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Lounge.png" alt="Lounge">
+                                        <div>
+                                            <h5>Lounge</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Corredor adm 02.png" alt="Corredor Adm 02">
+                                        <div>
+                                            <h5>Corredor Adm 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso terraço.png" alt="Acesso Terraço">
+                                        <div>
+                                            <h5>Acesso Terraço</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso lounge 01.png" alt="Acesso Lounge 01">
+                                        <div>
+                                            <h5>Acesso Lounge 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Tanque de areia.png" alt="Tanque de Areia">
+                                        <div>
+                                            <h5>Tanque de Areia</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Rcepção 04.png" alt="Recepção 04">
+                                        <div>
+                                            <h5>Recepção 04</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso lounge 03.png" alt="Acesso Lounge 03">
+                                        <div>
+                                            <h5>Acesso Lounge 03</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Recepção 01.png" alt="Recepção 01">
+                                        <div>
+                                            <h5>Recepção 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso Lounge 02.png" alt="Acesso Lounge 02">
+                                        <div>
+                                            <h5>Acesso Lounge 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Rcepção 02.png" alt="Recepção 02">
+                                        <div>
+                                            <h5>Recepção 02</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Corredor adm 01.png" alt="Corredor Adm 01">
+                                        <div>
+                                            <h5>Corredor Adm 01</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Rampa recepção.png" alt="Rampa Recepção">
+                                        <div>
+                                            <h5>Rampa Recepção</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso corredor 1 andar.png" alt="Acesso Corredor 1 Andar">
+                                        <div>
+                                            <h5>Acesso Corredor 1 Andar</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Acesso quadra.png" alt="Acesso Quadra">
+                                        <div>
+                                            <h5>Acesso Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/corredor 1 andar y2-y4.png" alt="Corredor 1° Andar Y2-Y4">
+                                        <div>
+                                            <h5>Corredor 1° Andar Y2-Y4</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Lavanderia.png" alt="Lavanderia">
+                                        <div>
+                                            <h5>Lavanderia</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Auditorio.png" alt="Auditorio">
+                                        <div>
+                                            <h5>Auditorio</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Quadra.png" alt="Quadra">
+                                        <div>
+                                            <h5>Quadra</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Relogio de ponto.png" alt="Relogio de Ponto">
+                                        <div>
+                                            <h5>Relogio de Ponto</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/Esc. emerg. terreo.png" alt="Esc. Emergência. Terreo">
+                                        <div>
+                                            <h5>Esc. Emergência. Terreo</h5>
+                                            <span>Online</span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/branco.png" alt="">
+                                        <div>
+                                            <h5></h5>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/branco.png" alt="">
+                                        <div>
+                                            <h5></h5>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/branco.png" alt="">
+                                        <div>
+                                            <h5></h5>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/branco.png" alt="">
+                                        <div>
+                                            <h5></h5>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="imagens-camera1">
+                                        <img src="../static/image/branco.png" alt="">
+                                        <div>
+                                            <h5></h5>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                                <div class="pagination1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>     
+                
+            </div>
+        </div>
+    </section>
+    <script>
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicialize o DataTables com a tradução para o português e a configuração de classes
+            var tabela = $('#tabela-ip').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese-Brasil.json'
+                },
+                columnDefs: [
+                    { className: "penultimacoluna", targets: 3 }, // Adicione a classe à coluna desejada
+                ]
+            });
+        });   
+        document.addEventListener("DOMContentLoaded", function () {
+        var menuLinks = document.querySelectorAll(".menu-box a");
+        var infos = document.getElementById("infos");
+
+        function mostrarConteudo(id) {
+            // Oculta todos os conteúdos
+            var conteudos = document.querySelectorAll('.conteudo');
+            conteudos.forEach(function (conteudo) {
+                conteudo.style.display = 'none';
+            });
+
+            // Exibe o conteúdo relevante
+            var conteudoSelecionado = document.getElementById(id);
+            conteudoSelecionado.style.display = 'block';
+        }
+
+        // Adiciona um ouvinte de evento para cada link do menu
+        var linksMenu = document.querySelectorAll('.menu-box a');
+        linksMenu.forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault(); // Impede o comportamento padrão do link
+                var href = link.getAttribute('href').substring(1); // Remove o caractere '#' do href
+                mostrarConteudo(href);
+            });
+        });
+
+            // Mostra o conteúdo relacionado a IP inicialmente
+            mostrarConteudo('ip');
+        });
+
+        document.getElementById('menu-suspenso').addEventListener("click", () => {
+            var menu = document.getElementById('menu');
+            var infos = document.getElementById("infos");
+            var menua1 = document.querySelector(".menu-a1")
+            var menua = document.querySelector(".menu-a")
+            var seta1 = document.querySelector(".seta1")
+            var seta = document.querySelector(".seta")
+            var iconelink1 = document.querySelector(".menudiv1")
+            var iconelink = document.querySelector(".menudiv")
+            var linkfont = document.querySelector(".link")
+            var linkfont1 = document.querySelector(".link1")
+            var titulo1 = document.querySelector(".localizar")
+            var titulo = document.querySelector(".verificar")
+            var arrowmenu = document.getElementById("menu-suspenso")
+
+            // Verifica se o menu está atualmente visível
+            if (menu.style.width === "8%") {
+                // Se estiver visível, oculta o menu
+                menu.style.width = "15%";
+                menua.style.flexDirection = 'row';
+                menua1.style.flexDirection = 'row';
+                seta.style.display = "block"
+                seta1.style.display = "block"
+                iconelink.style.justifyContent = 'space-between';
+                iconelink1.style.justifyContent = 'space-between';
+                linkfont.style.fontSize = "14px"
+                linkfont1.style.fontSize = "14px"
+                linkfont.style.marginTop = "0px"
+                linkfont1.style.marginTop = "0px"
+                menu.style.padding = "2%"
+                titulo1.style.textAlign = "left"
+                titulo.style.textAlign = "left"
+                menu.style.transition = "width 0.3s ease";
+                arrowmenu.src = '{{ url_for("static", filename="image/mennu.png") }}';
+                infos.style.width = "85%"; // Ajuste a largura conforme necessário
+            } else {
+                // Se não estiver visível, exibe o menu
+                menu.style.width = "8%";
+                menua.style.flexDirection = 'column';
+                menua1.style.flexDirection = 'column';
+                seta.style.display = "none"
+                seta1.style.display = "none"
+                iconelink.style.justifyContent = 'center';
+                iconelink1.style.justifyContent = 'center';
+                linkfont.style.fontSize = "13px"
+                linkfont1.style.fontSize = "13px"
+                linkfont.style.marginTop = "15px"
+                linkfont1.style.marginTop = "15px"
+                menu.style.padding = "1%"
+                titulo1.style.textAlign = "center"
+                titulo.style.textAlign = "center"
+                menu.style.transition = "width 0.3s ease";
+                arrowmenu.src = '{{ url_for("static", filename="image/mennu1.png") }}';
+                infos.style.width = "92%"; // Ajuste a largura conforme necessário
+            }
+        });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput = document.getElementById("search");
+
+            // Adiciona um ouvinte de evento ao campo de pesquisa
+            searchInput.addEventListener("keydown", function (event) {
+                // Verifica se a tecla pressionada é a tecla Enter (código 13)
+                if (event.keyCode === 13) {
+                    // Chama a função de pesquisa
+                    pesquisarPorIP();
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput2 = document.getElementById("search-nome");
+
+            // Adiciona um ouvinte de evento ao campo de pesquisa
+            searchInput2.addEventListener("keydown", function (event) {
+                // Verifica se a tecla pressionada é a tecla Enter (código 13)
+                if (event.keyCode === 13) {
+                    // Chama a função de pesquisa
+                    pesquisarPorNome();
+                }
+            });
+        });
+        
+        /*função para pesquisar o ip*/
+        function pesquisarPorIP() {
+            var termoPesquisa = document.getElementById('search').value;
+            var tabela = document.querySelector('table');
+            var listaIP = document.getElementById('lista-ip');
+
+            // Limpa a lista antes de adicionar novos resultados
+            listaIP.innerHTML = '';
+
+            // Cria uma tabela para exibir o resultado
+            var tabelaResultado = document.createElement('table');
+            tabelaResultado.border = '1';
+            tabelaResultado.style.borderColor = "#ddd";
+            tabelaResultado.style.width = '100%';
+            tabelaResultado.style.backgroundColor = '#f9f9f9';
+
+            // Adiciona cabeçalho à tabela de resultados
+            var cabecalhoResultado = tabelaResultado.createTHead();
+            var linhaCabecalho = cabecalhoResultado.insertRow();
+            linhaCabecalho.innerHTML = '<th>IP</th><th>Nome</th><th>DVR</th><th>Posição</th>';
+
+            // Adiciona corpo à tabela de resultados
+            var corpoResultado = tabelaResultado.createTBody();
+
+            var encontrado = false;
+
+            // Itera sobre as linhas da tabela
+            for (var i = 1; i < tabela.rows.length; i++) {
+                var ipAtual = tabela.rows[i].cells[0].innerText;
+                var nomeAtual = tabela.rows[i].cells[1].innerText;
+
+                // Verifica se o IP na tabela é igual ao termo de pesquisa
+                if (ipAtual === termoPesquisa) {
+                    // Adiciona a linha correspondente à tabela de resultado
+                    var linhaResultado = corpoResultado.insertRow();
+                    linhaResultado.innerHTML = `<td>${ipAtual}</td><td>${nomeAtual}</td><td>${tabela.rows[i].cells[2].innerText}</td><td>${tabela.rows[i].cells[3].innerText}</td>`;
+                    encontrado = true;
+                    break; // Encerra o loop ao encontrar um resultado
+                }
+            }
+
+            // Adiciona a tabela de resultado à lista se encontrado
+            if (encontrado) {
+                listaIP.innerHTML = "Resultado da pesquisa:";
+                listaIP.appendChild(tabelaResultado);
+            } else {
+                listaIP.innerHTML = "IP não encontrado.";
+            }
+        }
+        
+        /*cameras do dvr2*/
+        document.addEventListener('DOMContentLoaded', function () {
+        const slider = document.querySelector('.slider1');
+        const pagination = document.querySelector('.pagination1');
+        const itemsPerPage = 6;
+
+        const imagensCamera = document.querySelectorAll('.imagens-camera1');
+        const totalItems = imagensCamera.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        for (let i = 0; i < totalPages; i++) {
+            const span = document.createElement('span');
+            span.innerText = i + 1;
+            span.addEventListener('click', () => showPage(i));
+            pagination.appendChild(span);
+        }
+
+        function showPage(page) {
+            const start = page * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            slider.innerHTML = ''; // Limpa o conteúdo atual do slider
+
+            for (let i = start; i < end && i < totalItems; i++) {
+            const imagemClone = imagensCamera[i].cloneNode(true);
+            imagemClone.classList.add('imagens-camera1');
+            slider.appendChild(imagemClone);
+            }
+        }
+        console.log(totalItems - 5)
+        contador = totalItems - 5 
+        var dvr2cont = document.getElementById("dvr2cont")
+        dvr2cont.innerHTML = contador + " câmeras"
+        showPage(0); // Mostra a primeira página por padrão
+        });
+        
+        /*cameras do dvr 1*/
+        document.addEventListener('DOMContentLoaded', function () {
+        const slider = document.querySelector('.slider');
+        const pagination = document.querySelector('.pagination');
+        const itemsPerPage = 6;
+
+        const imagensCamera = document.querySelectorAll('.imagens-camera');
+        const totalItems = imagensCamera.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        for (let i = 0; i < totalPages; i++) {
+            const span = document.createElement('span');
+            span.innerText = i + 1;
+            span.addEventListener('click', () => showPage(i));
+            pagination.appendChild(span);
+        }
+
+        function showPage(page) {
+            const start = page * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            slider.innerHTML = ''; // Limpa o conteúdo atual do slider
+
+            for (let i = start; i < end && i < totalItems; i++) {
+            const imagemClone = imagensCamera[i].cloneNode(true);
+            imagemClone.classList.add('imagens-camera');
+            slider.appendChild(imagemClone);
+            }
+        }
+        contador = totalItems
+        var dvr1cont = document.getElementById("dvr1cont")
+        dvr1cont.innerHTML = contador + " câmeras"
+        var dvrconttotal = document.getElementById("dvrconttotal")
+        dvrtotal = contador + 32
+        dvrconttotal.innerHTML = dvrtotal + " câmeras"
+        showPage(0); // Mostra a primeira página por padrão
+        });
+
+        /*dvrs*/  
+        function mostrarConteudo(id) {
+            var conteudos = document.querySelectorAll('.dvr-imagens');
+            conteudos.forEach(function (conteudo) {
+                conteudo.classList.remove('show');
+            });
+
+            var conteudoSelecionado = document.getElementById(id);
+            if (conteudoSelecionado) {
+                conteudoSelecionado.classList.add('show');
+            }
+        }
+        
+        /*input para add*/
+        var addbtn = document.getElementById("addbtn")
+        var boxadd = document.querySelector(".boxAddForms")
+        addbtn.addEventListener("click", ()=>{
+            boxadd.style.display = "block"
+        })
+
+        var close = document.querySelector(".close")
+        close.addEventListener("click",()=>{
+            boxadd.style.display = "none"   
+        })
+        
+        /*header menu*/ 
+        var menuheaderbtn = document.querySelector(".menu-sair");
+        var menuheader = document.querySelector(".menu-nome-logout");
+
+        menuheaderbtn.addEventListener("click", () => {
+            menuheader.style.display = "flex";
+        });
+
+        // Adiciona um ouvinte de evento de clique ao documento inteiro
+        document.addEventListener("click", (event) => {
+            // Verifica se o clique não ocorreu dentro do menu ou no botão que abre o menu
+            if (!menuheader.contains(event.target) && event.target !== menuheaderbtn) {
+                // Fecha o menu
+                menuheader.style.display = "none";
+            }
+        });
+        
+       
+
+    </script>
+</body>
+</html>
